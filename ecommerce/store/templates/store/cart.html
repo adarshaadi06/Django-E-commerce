@@ -1,0 +1,91 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Shopping Cart - My E-commerce{% endblock %}
+
+{% block content %}
+  <h2>Your Shopping Cart</h2>
+  {% if cart_items %}
+    <table class="table table-hover">
+      <thead>
+         <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th>Action</th>
+         </tr>
+      </thead>
+      <tbody>
+         {% for item in cart_items %}
+           <tr id="cart-item-{{ item.product.id }}">
+              <td>{{ item.product.name }}</td>
+              <td>
+                <button class="btn btn-sm btn-secondary" onclick="updateCart({{ item.product.id }}, 'decrement')">-</button>
+                <span id="quantity-{{ item.product.id }}">{{ item.quantity }}</span>
+                <button class="btn btn-sm btn-secondary" onclick="updateCart({{ item.product.id }}, 'increment')">+</button>
+              </td>
+              <td>₹{{ item.product.price }}</td>
+              <td id="total-{{ item.product.id }}">₹{{ item.total }}</td>
+              <td>
+                <!-- Optionally, you can also include a direct Remove button -->
+                <button class="btn btn-danger btn-sm" onclick="updateCart({{ item.product.id }}, 'remove')">Remove</button>
+              </td>
+           </tr>
+         {% endfor %}
+      </tbody>
+    </table>
+    <div class="d-flex justify-content-end">
+       <h4>Grand Total: ₹<span id="grand-total">{{ grand_total }}</span></h4>
+    </div>
+    <div class="text-end">
+       <a href="{% url 'store:checkout' %}" class="btn btn-primary">Proceed to Checkout</a>
+    </div>
+  {% else %}
+    <p>Your shopping cart is empty.</p>
+  {% endif %}
+{% endblock %}
+
+
+
+{% block extra_js %}
+<script>
+  // Function to update the cart quantity via AJAX
+  function updateCart(productId, action) {
+    fetch("{% url 'store:update_cart' %}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: JSON.stringify({ product_id: productId, action: action })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Update the quantity and totals on the page
+        if (action === 'increment' || action === 'decrement') {
+          document.getElementById('quantity-' + productId).innerText = data.new_quantity;
+          document.getElementById('total-' + productId).innerText = '₹' + data.new_total;
+          document.getElementById('grand-total').innerText = data.grand_total;
+          // Add a class to animate update
+          let qtyElem = document.getElementById('quantity-' + productId);
+          qtyElem.classList.add('updated');
+          setTimeout(() => qtyElem.classList.remove('updated'), 1000);
+        } else if (action === 'remove') {
+          // Remove the row from the table
+          document.getElementById('cart-item-' + productId).remove();
+          document.getElementById('grand-total').innerText = data.grand_total;
+        }
+      } else {
+        alert(data.error || 'Error updating cart.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('Error updating cart.');
+    });
+  }
+</script>
+{% endblock %}
+

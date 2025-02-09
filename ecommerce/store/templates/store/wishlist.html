@@ -1,0 +1,32 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}My Wishlist - My E-commerce{% endblock %}
+
+{% block content %}
+  <h2>My Wishlist</h2>
+  {% if wishlist_products %}
+    <div class="row">
+      {% for product in wishlist_products %}
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            {% if product.image %}
+              <img src="{{ product.image.url }}" class="card-img-top product-img" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+            {% else %}
+              <img src="{% static 'images/placeholder.jpg' %}" class="card-img-top product-img" alt="Placeholder">
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ product.name }}</h5>
+              <p class="card-text">{{ product.description|truncatewords:15 }}</p>
+              <p class="card-text"><strong>₹{{ product.price }}</strong></p>
+              <a href="{% url 'store:product_detail' product.id %}" class="btn btn-primary">View Details</a>
+              <a href="{% url 'store:remove_from_wishlist' product.id %}" class="btn btn-danger btn-sm mt-2">Remove</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Your wishlist is empty.</p>
+  {% endif %}
+{% endblock %}

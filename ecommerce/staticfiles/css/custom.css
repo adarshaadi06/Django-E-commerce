@@ -1,0 +1,48 @@
+/* custom.css */
+
+/* Update the body background and font */
+body {
+    background-color: #f0f2f5; /* light grey background */
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #333;
+}
+
+/* Customize the Navbar */
+.navbar {
+    background-color: #343a40 !important;  /* Dark navbar */
+}
+.navbar-brand, .navbar-nav .nav-link {
+    color: #ffffff !important;  /* White text */
+}
+.navbar-nav .nav-link:hover {
+    color: #f8f9fa !important;
+}
+
+/* Card styling improvements */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+.card-img-top {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+/* Add some spacing for content */
+.container {
+    margin-top: 20px;
+}
+
+/* custom.css */
+
+/* Ensure product images display at the same size */
+.product-img {
+    height: 200px;         /* Set desired height */
+    width: 100%;           /* Full width of the card */
+    object-fit: cover;     /* Crop the image to fill container without distortion */
+}

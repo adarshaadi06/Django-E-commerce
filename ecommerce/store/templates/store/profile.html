@@ -1,0 +1,13 @@
+{% extends 'store/base.html' %}
+{% block title %}Profile - My E-commerce{% endblock %}
+
+{% block content %}
+  <h2>My Profile</h2>
+  {% if user.is_authenticated %}
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <!-- Add more user details or order history as needed -->
+  {% else %}
+    <p>You are not logged in. Please <a href="{% url 'login' %}">login</a>.</p>
+  {% endif %}
+{% endblock %}
